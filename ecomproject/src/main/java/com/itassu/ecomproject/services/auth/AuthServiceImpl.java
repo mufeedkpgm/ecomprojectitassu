@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.itassu.ecomproject.dto.SignupRequest;
 import com.itassu.ecomproject.dto.UserDto;
+import com.itassu.ecomproject.entity.Order;
 import com.itassu.ecomproject.entity.User;
+import com.itassu.ecomproject.enums.OrderStatus;
 import com.itassu.ecomproject.enums.UserRole;
+import com.itassu.ecomproject.repository.OrderRepository;
 import com.itassu.ecomproject.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -21,6 +24,9 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
+	@Autowired
+	private OrderRepository orderRepository;
+	
 	
 	
 	public UserDto createUser (SignupRequest signupRequest) {
@@ -31,6 +37,14 @@ public class AuthServiceImpl implements AuthService {
 		user.setPassword(new BCryptPasswordEncoder().encode(signupRequest.getPassword()));
 		user.setRole(UserRole.CUSTOMER);
 		User createdUser = userRepository.save(user);
+		
+		Order order = new Order();
+		order.setAmount(0L);
+		order.setTotalAmount(0L);
+		order.setDiscount(0L);
+		order.setUser(createdUser);
+		order.setOrderStatus(OrderStatus.Pending);
+		orderRepository.save(order);
 		
 		
 		UserDto userDto = new UserDto();

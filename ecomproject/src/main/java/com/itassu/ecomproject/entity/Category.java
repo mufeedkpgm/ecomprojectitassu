@@ -22,5 +22,13 @@ public class Category {
 	
 	@Lob
 	private String discription;
+	
+	@Override
+	public String toString() {
+	    return "Category{" +
+	            "id=" + id +
+	            ", name='" + name + '\'' +
+	            '}';
+	}
 
 }
